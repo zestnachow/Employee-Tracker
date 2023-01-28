@@ -60,26 +60,145 @@ const questionDisplay = async () => {
 }
 
 const viewAllDepartments = () => {
+    db.query("SELECT * FROM department", (err, res) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(res);
+        questionDisplay();
+    });
 }
 
 const viewAllRoles = () => {
-
+    db.query("SELECT * FROM role", (err, res) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(res);
+        questionDisplay();
+    })
 }
 
 const viewAllEmployees = () => {
-
+    db.query("SELECT employee.id AS 'id', employee.first_name, employee.last_name, role.title, department.name AS 'department', role.salary, CONCAT (manager.first_name,' ', manager.last_name) AS 'manager name' FROM employee JOIN role ON role.id = employee.role_id JOIN department ON department.id = role.department_id LEFT JOIN employee AS manager ON employee.manager_id = manager.id ORDER BY employee.id ASC", (err, res) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(res);
+        questionDisplay();
+    })
 }
 
 const addDepartment = () => {
-
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "name",
+            message: "What is the name of the department you would like to add?"
+        }
+    ]).then(function(res) {
+        db.query("INSERT INTO department SET ?", {
+            name: res.name
+        },
+        function(err, res) {
+            if (err) {
+                console.log(err);
+            }
+            console.table(res);
+            questionDisplay();
+        }
+        )
+    })
 }
 
 const addRole = () => {
-
+    const res = db.query("SELECT * FROM department");
+    let departmentList = res.map((department) => ({
+        name: department.name,
+        value: department.id,
+    }));
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "roleName",
+            message: "What role would you like to add?"
+        },
+        {
+            type: "input",
+            name: "roleSalary",
+            message: "What is the salary for this role?"
+        },
+        {
+            type: "list",
+            name: "chooseDepartment",
+            message: "Which department will this role fall under?",
+            choices: departmentList
+        }
+    ]).then(function(res) {
+        db.query("INSERT INTO role SET ?", {
+            name: res.roleName,
+            salary: res.roleSalary,
+            department_id: res.chooseDepartment
+        }, 
+        function(err, res) {
+            if (err) {
+                console.log(err);
+            }
+            console.table(res);
+            questionDisplay();
+        })
+    })
 }
 
 const addEmployee = () => {
-
+    const roles = db.query("SELECT * FROM role");
+    let roleList = roles.map((role) => ({
+        name: role.title,
+        value: role.id,
+    }));
+    const managers = db.query("SELECT * FROM employee");
+    let managerList = managers.map((employee) => ({
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id,
+    }))
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "firstName",
+            message: "What is the employee's first name?",
+        },
+        {
+            type: "input",
+            name: "lastName",
+            message: "What is the employee's last name?",
+        }, 
+        {
+            type: "list",
+            name: "employeeRole",
+            message: "What is the employee's role?",
+            choices: roleList,
+        },
+        {
+            type: "list",
+            name: "employeeManager",
+            message: "Who is the employee's manager?",
+            choices: managerList,
+        }
+    ]).then(function(res) {
+        db.query("INSERT INTO employees SET ?", {
+            first_name: res.firstName,
+            last_name: res.lastName,
+            role_id: res.employeeRole,
+            manager_id: res.employeeManager,
+        },
+        function(err, res) {
+            if (err) {
+                console.log(err);
+            }
+            console.table(res);
+            questionDisplay();
+        })
+    })
 }
 
 const updateEmployeeRole = () => {
@@ -88,4 +207,3 @@ const updateEmployeeRole = () => {
 
 
 
-questionDisplay();
