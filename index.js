@@ -50,36 +50,39 @@ const questionDisplay = async () => {
                 updateEmployeeRole();
                 break;
             case "Quit":
-                quit();
+                db.end();
+                console.log("\n Thanks for using the employee tracker. Goodbye! \n");
+                return;
+            default:
                 break;
         }
     })
 }
 
-const viewAllDepartments = async () => {
+const viewAllDepartments = () => {
 }
 
-const viewAllRoles = async () => {
-
-}
-
-const viewAllEmployees = async () => {
+const viewAllRoles = () => {
 
 }
 
-const addDepartment = async () => {
+const viewAllEmployees = () => {
 
 }
 
-const addRole = async () => {
+const addDepartment = () => {
 
 }
 
-const addEmployee = async () => {
+const addRole = () => {
 
 }
 
-const updateEmployeeRole = async () => {
+const addEmployee = () => {
+
+}
+
+const updateEmployeeRole = () => {
 
 }
 
