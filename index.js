@@ -104,6 +104,14 @@ const addDepartment = () => {
 }
 
 const addRole = () => {
+    db.query("SELECT * FROM department", (err, res) => {
+        const departments = res.map((department) => {
+            return {
+                name: department.name,
+                value: department.id,
+            }
+        })
+
     db.query(`SELECT * roles.title, roles.salary FROM role`, function(err, res) {
     inquirer.prompt([
         {
@@ -116,18 +124,26 @@ const addRole = () => {
             name: "roleSalary",
             message: "What is the salary for this role?"
         },
+        {
+            type: "list",
+            name: "department",
+            message: "Which department does this role fall under?",
+            choices: departments
+        }
     ]).then(function(res) {  
         db.query("INSERT INTO role SET ?", {
             title: res.roleName,
             salary: res.roleSalary,
+            department_id: res.department
         }, 
         function(err, res) {
             if (err) throw err;
             console.table(res);
             questionDisplay();
         })
-    }) 
+    })     
 });
+})
 }
 
 
