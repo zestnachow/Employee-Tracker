@@ -189,39 +189,44 @@ const addEmployee = () => {
 
 
 const updateEmployeeRole = () => {
-    const roles = db.query("SELECT * FROM role");
-    let roleList = roles.map((role) => ({
-        name: role.title,
-        value: role.id,
-    }));
-    const employees = db.query("SELECT * FROM employee");
-    let employeeList = employees.map((employee) => ({
-        name: `${employee.first_name} ${employee.last_name}`,
-        value: employee.id,
-    }));
+    db.query("SELECT * FROM role", (err, res) => {
+        const roles = res.map((role) => {
+            return {
+                name: role.title,
+                value: role.id
+            }
+        })   
+    db.query("SELECT * FROM employee", (err, res) => {
+        const employee = res.map((employee) => {
+            return {
+                name: employee.first_name + " " + employee.last_name,
+                value: employee.id,
+            }
+        })
     inquirer.prompt([
         {
             type: "list",
             name: "employeeList",
             message: "Whose role would you like to update?",
-            choices: employeeList,
+            choices: employee,
         },
         {
             type: "list",
             name: "updatedRole",
             message: "What new role would you like to give this employee?",
-            choices: roleList,
+            choices: roles,
         },
     ]).then(function(res) {
-        db.query(`UPDATE employee SET role_id = ${res.updatedRole} WHERE employee.id = ${res.employeeList}`);
-    },
+        db.query(`UPDATE employee SET role_id = ${res.updatedRole} WHERE employee.id = ${res.employeeList}`,
     function(err, res) {
-        if (err) {
-            console.log(err);
-        }
+        if (err) throw err;
         console.table(res);
         questionDisplay();
     })
+})
+    })
+})
 }
+
 
 
