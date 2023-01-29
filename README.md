@@ -1,5 +1,8 @@
 # Employee-Tracker
-https://github.com/zestnachow/Employee-Tracker
+Repository link: https://github.com/zestnachow/Employee-Tracker
+
+Video walkthrough link: https://drive.google.com/file/d/18G2eVgfGQKRSQuVFc8DDoRym3R8Bo-g0/view
+
 # Description
 This application allows organizations to easily view and edit the various departments, roles, and employees within their ranks. Using inquirer prompts, node.js command-line functionality, and MySQL queries, managers can quickly retrieve and update pertinent data.
 # Table of Contents
